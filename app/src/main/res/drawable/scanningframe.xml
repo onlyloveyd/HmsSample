@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 设置扫码框样式 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- 设置边框的宽度和颜色 -->
+    <stroke android:width="3dp" android:color="#e1ffff"/>
+    <!-- 设置框内的填充色  -->
+    <solid android:color="#1f00BCD4"/>
+    <!-- 设置圆角 -->
+    <corners android:radius="5dip"/>
+    <!-- 设置内边距 -->
+    <padding
+        android:left="2dp"
+        android:top="2dp"
+        android:right="2dp"
+        android:bottom="2dp" />
+</shape>
