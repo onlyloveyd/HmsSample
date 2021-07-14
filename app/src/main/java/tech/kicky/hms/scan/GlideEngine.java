@@ -1,4 +1,4 @@
-package tech.kicky.scan;
+package tech.kicky.hms.scan;
 
 import android.content.Context;
 import android.graphics.Bitmap;

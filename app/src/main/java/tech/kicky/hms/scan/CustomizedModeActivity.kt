@@ -1,4 +1,4 @@
-package tech.kicky.scan
+package tech.kicky.hms.scan
 
 import android.app.Activity
 import android.content.Intent
@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.huawei.hms.hmsscankit.RemoteView
 import com.huawei.hms.ml.scan.HmsScan
-import tech.kicky.scan.databinding.ActivityCustomizedModeBinding
+import tech.kicky.hms.scan.databinding.ActivityCustomizedModeBinding
 
 /**
  * 自定义布局扫码

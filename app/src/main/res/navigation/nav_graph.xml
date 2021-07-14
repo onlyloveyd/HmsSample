@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="tech.kicky.hms.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_cameraKitFragment"
+            app:destination="@id/cameraKitFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_scanKitFragment"
+            app:destination="@id/scanKitFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_colorFilterFragment"
+            app:destination="@id/colorFilterFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/scanKitFragment"
+        android:name="tech.kicky.hms.scan.ScanKitFragment"
+        android:label="ScanKitFragment"
+        tools:layout="@layout/fragment_scan_kit" />
+    <fragment
+        android:id="@+id/cameraKitFragment"
+        android:name="tech.kicky.hms.camera.CameraKitFragment"
+        android:label="CameraKitFragment"
+        tools:layout="@layout/fragment_camera_kit" />
+    <fragment
+        android:id="@+id/colorFilterFragment"
+        android:name="tech.kicky.hms.colorfilter.ColorFilterFragment"
+        android:label="fragment_color_filter"
+        tools:layout="@layout/fragment_color_filter" />
+</navigation>

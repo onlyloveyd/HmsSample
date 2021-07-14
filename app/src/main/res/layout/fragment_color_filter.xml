@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="tech.kicky.hms.colorfilter.ColorFilterFragment">
+
+    <Button
+        android:id="@+id/get"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="Filter"
+        android:textAllCaps="false" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/filters"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <ImageView
+            android:id="@+id/picture"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_add" />
+    </LinearLayout>
+
+</LinearLayout>
+
