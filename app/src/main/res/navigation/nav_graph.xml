@@ -11,9 +11,6 @@
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_cameraKitFragment"
-            app:destination="@id/cameraKitFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_scanKitFragment"
             app:destination="@id/scanKitFragment" />
         <action
@@ -25,11 +22,6 @@
         android:name="tech.kicky.hms.scan.ScanKitFragment"
         android:label="ScanKitFragment"
         tools:layout="@layout/fragment_scan_kit" />
-    <fragment
-        android:id="@+id/cameraKitFragment"
-        android:name="tech.kicky.hms.camera.CameraKitFragment"
-        android:label="CameraKitFragment"
-        tools:layout="@layout/fragment_camera_kit" />
     <fragment
         android:id="@+id/colorFilterFragment"
         android:name="tech.kicky.hms.colorfilter.ColorFilterFragment"

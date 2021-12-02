@@ -19,7 +19,6 @@ import tech.kicky.hms.scan.databinding.ActivityCustomizedModeBinding
  */
 class CustomizedModeActivity : AppCompatActivity() {
     companion object {
-        const val SCAN_RESULT = "scanResult"
         private const val SCAN_FRAME_SIZE = 300
     }
 
@@ -62,7 +61,7 @@ class CustomizedModeActivity : AppCompatActivity() {
             ) {
                 val intent = Intent()
                 intent.apply {
-                    putExtra(SCAN_RESULT, result[0])
+                    putExtra(CustomizedModeContract.EXTRA_OUT, result[0])
                 }
                 setResult(Activity.RESULT_OK, intent)
                 this.finish()

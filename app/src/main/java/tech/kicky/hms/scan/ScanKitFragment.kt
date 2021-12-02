@@ -7,14 +7,13 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseArray
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import com.airbnb.mvrx.viewbinding.viewBinding
 import com.huantansheng.easyphotos.EasyPhotos
 import com.huantansheng.easyphotos.callback.SelectCallback
 import com.huantansheng.easyphotos.models.album.entity.Photo
@@ -31,28 +30,28 @@ import java.util.*
  * author: yidong
  * 2021-07-10
  */
-class ScanKitFragment : Fragment() {
+class ScanKitFragment : Fragment(R.layout.fragment_scan_kit) {
 
-    private val TAG = "ScanKitSample"
-    private val CAMERA_REQ_CODE = 1000
-    private val REQUEST_CODE_SCAN_DEFAULT_MODE = 0X01
-    private val REQUEST_CODE_SCAN_CUSTOMIZED_MODE = 0X02
+    private val sTag = "ScanKitSample"
+    private val REQUEST_CODE_SCAN_DEFAULT_MODE = 0x01
 
-    private val mBinding by lazy {
-        FragmentScanKitBinding.inflate(layoutInflater)
-    }
+    private val mBinding: FragmentScanKitBinding by viewBinding()
+    private val mPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            it?.let {
+                if (it.containsValue(false)) {
+                    Toast.makeText(context, "请给予相机和存储权限", Toast.LENGTH_SHORT).show()
+                    childFragmentManager.popBackStack()
+                }
+            }
+        }
 
-    private val viewModel: ScanKitViewModel by viewModels()
-
-    private var doNext: (() -> Unit)? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return mBinding.root
-    }
+    private val mCustomizedModeLauncher =
+        registerForActivityResult(CustomizedModeContract()) {
+            if (!TextUtils.isEmpty(it?.getOriginalValue())) {
+                mBinding.tvResult.text = it?.getOriginalValue()
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,15 +67,15 @@ class ScanKitFragment : Fragment() {
         mBinding.btBitmapMode.setOnClickListener {
             startBitmapMode()
         }
-        requestCameraPermission()
+        requestPermission()
     }
 
-    private fun requestCameraPermission() {
-        //CAMERA_REQ_CODE为用户自定义，用于接收权限校验结果
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
-            CAMERA_REQ_CODE
+    private fun requestPermission() {
+        mPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
         )
     }
 
@@ -92,21 +91,6 @@ class ScanKitFragment : Fragment() {
             Manifest.permission.READ_EXTERNAL_STORAGE
         ) == PackageManager.PERMISSION_GRANTED
 
-    //实现“onRequestPermissionsResult”函数接收校验权限结果
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        //判断“requestCode”是否为申请权限时设置请求码CAMERA_REQ_CODE，然后校验权限开启状态
-        if (!(requestCode == CAMERA_REQ_CODE && grantResults.size == 2
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED)
-        ) {
-            doNext?.invoke()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != AppCompatActivity.RESULT_OK || data == null) {
@@ -115,13 +99,6 @@ class ScanKitFragment : Fragment() {
         when (requestCode) {
             REQUEST_CODE_SCAN_DEFAULT_MODE -> {
                 val hmsScan: HmsScan? = data.getParcelableExtra(ScanUtil.RESULT)
-                if (!TextUtils.isEmpty(hmsScan?.getOriginalValue())) {
-                    mBinding.tvResult.text = hmsScan?.getOriginalValue()
-                }
-            }
-
-            REQUEST_CODE_SCAN_CUSTOMIZED_MODE -> {
-                val hmsScan: HmsScan? = data.getParcelableExtra(CustomizedModeActivity.SCAN_RESULT)
                 if (!TextUtils.isEmpty(hmsScan?.getOriginalValue())) {
                     mBinding.tvResult.text = hmsScan?.getOriginalValue()
                 }
@@ -137,17 +114,11 @@ class ScanKitFragment : Fragment() {
                 requireActivity(), REQUEST_CODE_SCAN_DEFAULT_MODE,
                 options
             )
-        } else {
-            this.doNext = this::startDefaultMode
-            requestCameraPermission()
         }
     }
 
     private fun startCustomizedMode() {
-        this.startActivityForResult(
-            Intent(requireContext(), CustomizedModeActivity::class.java),
-            REQUEST_CODE_SCAN_CUSTOMIZED_MODE
-        )
+        mCustomizedModeLauncher.launch(null)
     }
 
     private fun startBitmapMode() {
@@ -197,9 +168,6 @@ class ScanKitFragment : Fragment() {
                     }
 
                 })
-        } else {
-            this.doNext = this::startBitmapMode
-            requestCameraPermission()
         }
     }
 
@@ -241,7 +209,7 @@ class ScanKitFragment : Fragment() {
                                 }
                             }.addOnFailureListener {
                                 it?.printStackTrace()
-                                Log.d(TAG, it.message ?: "")
+                                Log.d(sTag, it.message ?: "")
                             }
                         }
                     }
@@ -256,9 +224,6 @@ class ScanKitFragment : Fragment() {
                     }
 
                 })
-        } else {
-            this.doNext = this::startMultiProcessorMode
-            requestCameraPermission()
         }
     }
 }

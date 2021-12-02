@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId "tech.kicky.scan"
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -49,34 +49,30 @@ android {
         jvmTarget = '1.8'
     }
     buildFeatures {
-        viewBinding = true
+        viewBinding true
     }
 }
 
 dependencies {
-
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.activity:activity-ktx:1.2.3'
     implementation 'androidx.fragment:fragment-ktx:1.3.5'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.huawei.hms:scanplus:1.3.2.300'
     implementation 'com.huawei.multimedia:camerakit:1.1.5'
 
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
 
     implementation 'com.github.bumptech.glide:glide:4.12.0'
-    implementation 'com.github.HuanTanSheng:EasyPhotos:3.1.3'
+    implementation 'com.github.HuanTanSheng:EasyPhotos:3.1.5'
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.5"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.5"
 
     // 协程
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
-
 
     // 场景智能设计服务 fallback-SDK
     implementation "com.huawei.hms:image-vision:1.0.3.301"

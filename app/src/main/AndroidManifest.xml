@@ -20,7 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScanKitSample"
         tools:replace="android:allowBackup,android:theme">
-        <activity android:name="tech.kicky.hms.MainActivity">
+        <activity
+            android:name="tech.kicky.hms.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

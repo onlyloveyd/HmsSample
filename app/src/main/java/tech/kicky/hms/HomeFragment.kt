@@ -1,9 +1,7 @@
 package tech.kicky.hms
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
@@ -25,7 +23,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val menu = arrayOf(
         "ScanKit" to HomeFragmentDirections.actionHomeFragmentToScanKitFragment(),
-        "CameraKit" to HomeFragmentDirections.actionHomeFragmentToCameraKitFragment(),
         "Color Filter" to HomeFragmentDirections.actionHomeFragmentToColorFilterFragment()
     )
 
