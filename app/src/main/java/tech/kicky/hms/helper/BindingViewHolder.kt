@@ -8,5 +8,4 @@ import androidx.viewbinding.ViewBinding
  * author: yidong
  * 2021-07-10
  */
-class BindingViewHolder(val binding: ViewBinding) :
-    RecyclerView.ViewHolder(binding.root)
+class BindingViewHolder(val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root)

@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.airbnb.mvrx.viewbinding.viewBinding
 import tech.kicky.hms.helper.TextAdapter
+import tech.kicky.hms.scan.R
 import tech.kicky.hms.scan.databinding.FragmentHomeBinding
 
 /**
@@ -16,25 +18,16 @@ import tech.kicky.hms.scan.databinding.FragmentHomeBinding
  * author: yidong
  * 2021-07-10
  */
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private val mBinding by lazy {
-        FragmentHomeBinding.inflate(layoutInflater)
-    }
+
+    private val mBinding: FragmentHomeBinding by viewBinding()
 
     private val menu = arrayOf(
         "ScanKit" to HomeFragmentDirections.actionHomeFragmentToScanKitFragment(),
         "CameraKit" to HomeFragmentDirections.actionHomeFragmentToCameraKitFragment(),
         "Color Filter" to HomeFragmentDirections.actionHomeFragmentToColorFilterFragment()
     )
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return mBinding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
