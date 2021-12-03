@@ -6,45 +6,8 @@
     android:orientation="vertical"
     tools:context="tech.kicky.hms.MainActivity">
 
-    <Button
-        android:id="@+id/bt_default_mode"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/menu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="12dp"
-        android:text="Default View Mode"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/bt_customized_view_mode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="12dp"
-        android:text="Customized View Mode"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/bt_bitmap_mode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="12dp"
-        android:text="Bitmap Mode"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/bt_multiprocessor_mode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="12dp"
-        android:text="MultiProcessor Mode"
-        android:textAllCaps="false" />
-
-    <TextView
-        android:id="@+id/tv_result"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginVertical="30dp"
-        android:background="#eeeeee"
-        android:padding="10dp"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:layout_height="match_parent" />
 </LinearLayout>

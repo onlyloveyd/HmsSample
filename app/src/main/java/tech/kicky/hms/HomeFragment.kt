@@ -39,7 +39,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     @Preview
     @Composable
-    fun previewMenu() {
+    fun PreviewMenu() {
         MaterialTheme {
             Menu()
         }
