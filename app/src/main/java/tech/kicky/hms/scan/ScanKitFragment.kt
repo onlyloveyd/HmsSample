@@ -34,6 +34,7 @@ import com.huawei.hms.ml.scan.HmsScan
 import com.huawei.hms.ml.scan.HmsScanAnalyzer
 import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.huawei.hms.mlsdk.common.MLFrame
+import tech.kicky.hms.helper.GlideEngine
 import java.util.*
 
 /**

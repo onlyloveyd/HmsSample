@@ -8,23 +8,40 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="tech.kicky.hms.HomeFragment"
-        android:label="HomeFragment"
-        tools:layout="@layout/fragment_home">
+        android:label="HomeFragment">
         <action
             android:id="@+id/action_homeFragment_to_scanKitFragment"
             app:destination="@id/scanKitFragment" />
         <action
             android:id="@+id/action_homeFragment_to_colorFilterFragment"
             app:destination="@id/colorFilterFragment" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_mlFragment"
+            app:destination="@id/mlFragment" />
     </fragment>
     <fragment
         android:id="@+id/scanKitFragment"
         android:name="tech.kicky.hms.scan.ScanKitFragment"
-        android:label="ScanKitFragment"
-        tools:layout="@layout/fragment_scan_kit" />
+        android:label="ScanKitFragment" />
+
     <fragment
         android:id="@+id/colorFilterFragment"
         android:name="tech.kicky.hms.colorfilter.ColorFilterFragment"
         android:label="fragment_color_filter"
         tools:layout="@layout/fragment_color_filter" />
+
+    <fragment
+        android:id="@+id/documentSkewCorrectionFragment"
+        android:name="tech.kicky.hms.ml.DocumentSkewCorrectionFragment"
+        android:label="fragment_document_skew_correction" />
+
+    <fragment
+        android:id="@+id/mlFragment"
+        android:name="tech.kicky.hms.ml.MLFragment"
+        android:label="fragment_ml">
+        <action
+            android:id="@+id/action_ml_to_document_skew_correction"
+            app:destination="@id/documentSkewCorrectionFragment" />
+    </fragment>
 </navigation>

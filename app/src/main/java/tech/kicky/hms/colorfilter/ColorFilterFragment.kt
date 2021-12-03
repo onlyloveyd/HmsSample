@@ -24,8 +24,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import tech.kicky.hms.MainActivity.Companion.TAG
 import tech.kicky.hms.helper.FilterAdapter
+import tech.kicky.hms.helper.GlideEngine
 import tech.kicky.hms.scan.BuildConfig
-import tech.kicky.hms.scan.GlideEngine
 import tech.kicky.hms.scan.R
 import tech.kicky.hms.scan.databinding.FragmentColorFilterBinding
 import java.util.*

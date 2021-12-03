@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <!--读文件权限-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -25,11 +24,9 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".CustomizedModeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -43,6 +40,18 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths_public" />
         </provider>
-    </application>
 
+        <meta-data
+            android:name="com.huawei.hms.client.channel.androidMarket"
+            android:value="false" />
+        <meta-data
+            android:name="com.huawei.hms.ml.DEPENDENCY"
+            android:value="dsc" />
+    </application>
+    <queries>
+        <intent>
+            <action android:name="com.huawei.hms.core.aidlservice" />
+        </intent>
+    </queries>
 </manifest>
+
