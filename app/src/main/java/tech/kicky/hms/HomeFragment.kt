@@ -1,7 +1,9 @@
 package tech.kicky.hms
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,24 +21,29 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
-import com.airbnb.mvrx.viewbinding.viewBinding
-import tech.kicky.hms.scan.R
-import tech.kicky.hms.scan.databinding.FragmentHomeBinding
 
 /**
  * Home Fragment
  * author: yidong
  * 2021-07-10
  */
-class HomeFragment : Fragment(R.layout.fragment_home) {
-
-
-    private val mBinding: FragmentHomeBinding by viewBinding()
-
+class HomeFragment : Fragment() {
     private val menu = arrayOf(
         "ScanKit" to HomeFragmentDirections.actionHomeFragmentToScanKitFragment(),
         "Color Filter" to HomeFragmentDirections.actionHomeFragmentToColorFilterFragment()
     )
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                Menu()
+            }
+        }
+    }
 
     @Preview
     @Composable
@@ -63,14 +71,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 )
                 Divider(modifier = Modifier.padding(8.dp))
             }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        mBinding.menu.setContent {
-            Menu()
         }
     }
 

@@ -2,32 +2,29 @@ package tech.kicky.hms.scan
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseArray
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.airbnb.mvrx.viewbinding.viewBinding
 import com.huantansheng.easyphotos.EasyPhotos
 import com.huantansheng.easyphotos.callback.SelectCallback
 import com.huantansheng.easyphotos.models.album.entity.Photo
@@ -36,7 +33,6 @@ import com.huawei.hms.ml.scan.HmsScan
 import com.huawei.hms.ml.scan.HmsScanAnalyzer
 import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.huawei.hms.mlsdk.common.MLFrame
-import tech.kicky.hms.scan.databinding.FragmentScanKitBinding
 import java.util.*
 
 /**
@@ -44,7 +40,7 @@ import java.util.*
  * author: yidong
  * 2021-07-10
  */
-class ScanKitFragment : Fragment(R.layout.fragment_scan_kit) {
+class ScanKitFragment : Fragment() {
 
     private val sTag = "ScanKitSample"
     private val REQUEST_CODE_SCAN_DEFAULT_MODE = 0x01
@@ -56,7 +52,6 @@ class ScanKitFragment : Fragment(R.layout.fragment_scan_kit) {
         "多线程模式" to this::startMultiProcessorMode
     )
 
-    private val mBinding: FragmentScanKitBinding by viewBinding()
     private val mPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             it?.let {
@@ -74,11 +69,20 @@ class ScanKitFragment : Fragment(R.layout.fragment_scan_kit) {
             }
         }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                ScanKitMenu()
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.menu.setContent {
-            Menu()
-        }
         requestPermission()
     }
 
@@ -87,12 +91,12 @@ class ScanKitFragment : Fragment(R.layout.fragment_scan_kit) {
     @Composable
     fun PreviewMenu() {
         MaterialTheme {
-            Menu()
+            ScanKitMenu()
         }
     }
 
     @Composable
-    private fun Menu() {
+    private fun ScanKitMenu() {
         LazyColumn {
             items(menu.size) { index ->
                 Text(

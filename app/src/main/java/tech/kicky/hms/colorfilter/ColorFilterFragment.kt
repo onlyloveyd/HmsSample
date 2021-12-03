@@ -39,7 +39,6 @@ class ColorFilterFragment : Fragment(R.layout.fragment_color_filter) {
 
     private val mBinding: FragmentColorFilterBinding by viewBinding()
 
-
     private var imageVisionFilterAPI: ImageVisionImpl? = null
     private lateinit var originBitmap: Bitmap
     private var filterIndex = 0
@@ -72,10 +71,6 @@ class ColorFilterFragment : Fragment(R.layout.fragment_color_filter) {
         mBinding.picture.setOnClickListener {
             pickImage()
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         initService()
     }
 
