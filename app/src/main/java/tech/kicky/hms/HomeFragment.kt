@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
@@ -57,19 +58,24 @@ class HomeFragment : Fragment() {
     private fun Menu() {
         LazyColumn {
             items(menu.size) { index ->
-                Text(
-                    text = menu[index].first,
-                    fontSize = 24.sp,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(8.dp, 16.dp)
-                        .fillParentMaxWidth(1.0F)
-                        .clickable {
-                            doRouter(menu[index].second)
-                        }
-                )
-                Divider(modifier = Modifier.padding(8.dp))
+                Column(modifier = Modifier
+                    .clickable {
+                        doRouter(menu[index].second)
+                    }) {
+                    Text(
+                        text = menu[index].first,
+                        fontSize = 24.sp,
+                        fontStyle = FontStyle.Italic,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(8.dp, 16.dp)
+                            .fillParentMaxWidth(1.0F)
+                            .clickable {
+                                doRouter(menu[index].second)
+                            }
+                    )
+                    Divider(modifier = Modifier.padding(8.dp))
+                }
             }
         }
     }

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
@@ -36,14 +37,13 @@ import com.huawei.hms.mlsdk.common.MLFrame
 import java.util.*
 
 /**
- * Description
+ * HMS ScanKit
  * author: yidong
  * 2021-07-10
  */
 class ScanKitFragment : Fragment() {
 
     private val sTag = "ScanKitSample"
-    private val REQUEST_CODE_SCAN_DEFAULT_MODE = 0x01
 
     private val menu = arrayOf(
         "默认模式" to this::startDefaultMode,
@@ -99,17 +99,19 @@ class ScanKitFragment : Fragment() {
     private fun ScanKitMenu() {
         LazyColumn {
             items(menu.size) { index ->
-                Text(
-                    text = menu[index].first,
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .padding(8.dp, 16.dp)
-                        .fillParentMaxWidth(1.0F)
-                        .clickable {
-                            menu[index].second.invoke()
-                        }
-                )
-                Divider(modifier = Modifier.padding(8.dp))
+                Column(modifier = Modifier
+                    .clickable {
+                        menu[index].second.invoke()
+                    }) {
+                    Text(
+                        text = menu[index].first,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .padding(8.dp, 8.dp)
+                            .fillMaxWidth(1.0f)
+                    )
+                    Divider(modifier = Modifier.padding(8.dp))
+                }
             }
         }
     }
@@ -129,7 +131,7 @@ class ScanKitFragment : Fragment() {
             return
         }
         when (requestCode) {
-            REQUEST_CODE_SCAN_DEFAULT_MODE -> {
+            Companion.REQUEST_CODE_SCAN_DEFAULT_MODE -> {
                 val hmsScan: HmsScan? = data.getParcelableExtra(ScanUtil.RESULT)
                 hmsScan?.getOriginalValue().let {
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
@@ -142,7 +144,7 @@ class ScanKitFragment : Fragment() {
         val options =
             HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.ALL_SCAN_TYPE).create()
         ScanUtil.startScan(
-            requireActivity(), REQUEST_CODE_SCAN_DEFAULT_MODE,
+            requireActivity(), Companion.REQUEST_CODE_SCAN_DEFAULT_MODE,
             options
         )
     }
@@ -180,9 +182,11 @@ class ScanKitFragment : Fragment() {
                         )
                         // Obtain the scanning result.
                         if (result != null && result.isNotEmpty()) {
-                            if (!TextUtils.isEmpty(result[0].getOriginalValue())) {
-//                                mBinding.tvResult.text = result[0].getOriginalValue()
-                            }
+                            val resultText = result.joinToString { it.originalValue }
+                            Log.d(sTag, resultText)
+                            Toast.makeText(
+                                context, resultText, Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }
@@ -219,25 +223,20 @@ class ScanKitFragment : Fragment() {
 
                         val options =
                             HmsScanAnalyzerOptions.Creator().setHmsScanTypes(
-                                HmsScan.QRCODE_SCAN_TYPE,
-                                HmsScan.DATAMATRIX_SCAN_TYPE
-                            )
-                                .create()
+                                HmsScan.ALL_SCAN_TYPE
+                            ).create()
                         val scanAnalyzer = HmsScanAnalyzer(options)
                         val image = MLFrame.fromBitmap(bitmap)
                         // 同步模式
-                        val result: SparseArray<HmsScan> = scanAnalyzer.analyseFrame(image)
+//                        val result: SparseArray<HmsScan> = scanAnalyzer.analyseFrame(image)
                         scanAnalyzer.analyzInAsyn(image).addOnSuccessListener {
-                            if (it != null && it.size > 0) {
-                                var resultStr = ""
-                                it.forEach { value ->
-                                    resultStr = resultStr.plus(value.originalValue).plus("\n")
-                                }
-//                                mBinding.tvResult.text = resultStr
-                            }
+                            val resultText = it.joinToString { hmsScan -> hmsScan.originalValue }
+                            Log.d(sTag, resultText)
+                            Toast.makeText(context, resultText, Toast.LENGTH_SHORT).show()
                         }.addOnFailureListener {
                             it?.printStackTrace()
                             Log.d(sTag, it.message ?: "")
+                            Toast.makeText(context, "识别失败", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -247,10 +246,13 @@ class ScanKitFragment : Fragment() {
                         requireContext(),
                         "图片选取失败",
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                 }
 
             })
+    }
+
+    companion object {
+        const val REQUEST_CODE_SCAN_DEFAULT_MODE = 1001
     }
 }
