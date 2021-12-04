@@ -1,14 +1,32 @@
 package tech.kicky.hms.colorfilter
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import com.airbnb.mvrx.viewbinding.viewBinding
+import coil.compose.rememberImagePainter
 import com.huantansheng.easyphotos.EasyPhotos
 import com.huantansheng.easyphotos.callback.SelectCallback
 import com.huantansheng.easyphotos.models.album.entity.Photo
@@ -23,11 +41,8 @@ import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import tech.kicky.hms.MainActivity.Companion.TAG
-import tech.kicky.hms.helper.FilterAdapter
 import tech.kicky.hms.helper.GlideEngine
 import tech.kicky.hms.scan.BuildConfig
-import tech.kicky.hms.scan.R
-import tech.kicky.hms.scan.databinding.FragmentColorFilterBinding
 import java.util.*
 
 /**
@@ -35,42 +50,90 @@ import java.util.*
  * author: yidong
  * 2021-07-10
  */
-class ColorFilterFragment : Fragment(R.layout.fragment_color_filter) {
+class ColorFilterFragment : Fragment() {
 
-    private val mBinding: FragmentColorFilterBinding by viewBinding()
+    private val viewModel: ColorFilterViewModel by viewModels()
 
     private var imageVisionFilterAPI: ImageVisionImpl? = null
-    private lateinit var originBitmap: Bitmap
-    private var filterIndex = 0
 
     private var isInit = false
-        set(value) {
-            field = value
-            mBinding.get.isEnabled = true
+
+
+    @Composable
+    private fun ColorFilterScreen() {
+        MaterialTheme {
+            val scaffoldState = rememberScaffoldState()
+            val scope = rememberCoroutineScope()
+            Scaffold(
+                floatingActionButtonPosition = FabPosition.End,
+                floatingActionButton = {
+                    FloatingActionButton(onClick = { pickImage() }) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                    }
+                },
+                topBar = {
+                    TopAppBar {
+                        Icon(imageVector = Icons.Default.Settings, contentDescription = null,
+                            modifier = Modifier.clickable {
+                                scope.launch {
+                                    scaffoldState.drawerState.apply {
+                                        if (isClosed) open() else close()
+                                    }
+                                }
+                            })
+                    }
+                },
+                drawerContent = {
+                    LazyColumn {
+                        items(LocalFilters.size) { index ->
+                            Text(
+                                text = LocalFilters[index].name,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(4.dp, 6.dp)
+                                    .clickable {
+                                        viewModel.filter = LocalFilters[index]
+                                        doFilter()
+                                    }
+                            )
+                        }
+                    }
+                }
+            ) {
+                Image(
+                    painter = rememberImagePainter(viewModel.showBitmap),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize(1.0f)
+                        .padding(12.dp),
+                    contentScale = ContentScale.Inside
+                )
+            }
         }
+    }
+
+    @Composable
+    @Preview
+    private fun PreviewColorFilterScreen() {
+        MaterialTheme {
+            ColorFilterScreen()
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                ColorFilterScreen()
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val adapter = FilterAdapter {
-            filterIndex = it
-        }
-
-        adapter.setData(LocalFilters)
-        mBinding.filters.adapter = adapter
-        mBinding.filters.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
-        mBinding.get.setOnClickListener {
-            doFilter()
-        }
-
-        mBinding.picture.setOnClickListener {
-            pickImage()
-        }
         initService()
     }
 
@@ -102,13 +165,13 @@ class ColorFilterFragment : Fragment(R.layout.fragment_color_filter) {
         })
     }
 
-    private fun stopService() {
-        imageVisionFilterAPI?.stop()
-    }
-
     private fun doFilter() {
-        if (!this::originBitmap.isInitialized) {
-            Toast.makeText(requireContext(), "Please Pick Image", Toast.LENGTH_SHORT).show()
+        if (viewModel.sourceBitmap == null) {
+            Toast.makeText(requireContext(), "请选择图片", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (viewModel.filter == null) {
+            Toast.makeText(requireContext(), "请选择滤镜效果", Toast.LENGTH_SHORT).show()
             return
         }
         lifecycleScope.launch(Dispatchers.IO) {
@@ -118,7 +181,7 @@ class ColorFilterFragment : Fragment(R.layout.fragment_color_filter) {
                 // 滤镜强度，取值范围[0,1.0]，默认为1.0。
                 taskJson.put("intensity", "1")
                 // 颜色映射的图片索引，索引范围[0,24]（0为原图）
-                taskJson.put("filterType", LocalFilters[filterIndex].code)
+                taskJson.put("filterType", viewModel.filter?.code)
                 // 压缩率，取值范围（0,1.0]，默认为1.0。
                 taskJson.put("compressRate", "1")
 
@@ -129,12 +192,11 @@ class ColorFilterFragment : Fragment(R.layout.fragment_color_filter) {
                 jsonObject.put("authJson", LocalAuthJson)
                 val visionResult = imageVisionFilterAPI?.getColorFilter(
                     jsonObject,
-                    originBitmap
+                    viewModel.sourceBitmap
                 )
                 withContext(Dispatchers.Main) {
                     if (visionResult?.resultCode == 0) {
-                        val image = visionResult.image
-                        mBinding.picture.setImageBitmap(image)
+                        viewModel.showBitmap = visionResult.image
                     } else {
                         Toast.makeText(
                             requireContext(),
@@ -166,8 +228,8 @@ class ColorFilterFragment : Fragment(R.layout.fragment_color_filter) {
                         }
                         // Obtain the bitmap from the image path.
                         val bitmap = ScanUtil.compressBitmap(requireActivity(), path)
-                        mBinding.picture.setImageBitmap(bitmap)
-                        originBitmap = Bitmap.createBitmap(bitmap)
+                        viewModel.sourceBitmap = bitmap
+                        viewModel.sourceBitmap = bitmap
                     }
                 }
 
@@ -176,16 +238,17 @@ class ColorFilterFragment : Fragment(R.layout.fragment_color_filter) {
                         requireContext(),
                         "图片选取失败",
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                 }
-
             })
     }
 
+    private fun stopService() {
+        imageVisionFilterAPI?.stop()
+    }
 
     override fun onDestroy() {
-        super.onDestroy()
         stopService()
+        super.onDestroy()
     }
 }

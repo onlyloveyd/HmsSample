@@ -111,7 +111,7 @@ class ScanKitFragment : Fragment() {
                             .padding(8.dp, 8.dp)
                             .fillMaxWidth(1.0f)
                     )
-                    Divider(modifier = Modifier.padding(8.dp))
+                    Divider(modifier = Modifier.padding(horizontal = 8.dp))
                 }
             }
         }

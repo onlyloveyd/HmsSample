@@ -29,7 +29,7 @@ android {
             v2SigningEnabled true
         }
         config {
-            storeFile file('D:/05_Project/00_Android_Project/HmsSample/app/keystore/hms.jks')
+            storeFile file('keystore\\hms.jks')
             storePassword 'hmshms'
             keyPassword 'hmshms'
             keyAlias 'hms'

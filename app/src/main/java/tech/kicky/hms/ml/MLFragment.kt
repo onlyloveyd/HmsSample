@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -64,7 +65,7 @@ class MLFragment : Fragment() {
                             .padding(8.dp, 8.dp)
                             .fillMaxWidth(1.0f)
                     )
-                    Divider(modifier = Modifier.padding(8.dp))
+                    Divider(modifier = Modifier.padding(horizontal = 8.dp))
                 }
             }
         }
@@ -77,6 +78,4 @@ class MLFragment : Fragment() {
             MLKitMenu()
         }
     }
-
-
 }

@@ -13,5 +13,4 @@ import androidx.lifecycle.ViewModel
  */
 class MLViewModel : ViewModel() {
     var pickBitmap by mutableStateOf<Bitmap?>(null)
-    var message by mutableStateOf<String>("")
 }

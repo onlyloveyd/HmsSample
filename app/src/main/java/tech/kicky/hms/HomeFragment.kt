@@ -75,7 +75,7 @@ class HomeFragment : Fragment() {
                                 doRouter(menu[index].second)
                             }
                     )
-                    Divider(modifier = Modifier.padding(8.dp))
+                    Divider(modifier = Modifier.padding(horizontal = 8.dp))
                 }
             }
         }
