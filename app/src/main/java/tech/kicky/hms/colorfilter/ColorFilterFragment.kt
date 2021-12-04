@@ -8,18 +8,20 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,13 +60,13 @@ class ColorFilterFragment : Fragment() {
 
     private var isInit = false
 
-
     @Composable
     private fun ColorFilterScreen() {
+        val scaffoldState = rememberScaffoldState()
+        val scope = rememberCoroutineScope()
         MaterialTheme {
-            val scaffoldState = rememberScaffoldState()
-            val scope = rememberCoroutineScope()
             Scaffold(
+                scaffoldState = scaffoldState,
                 floatingActionButtonPosition = FabPosition.End,
                 floatingActionButton = {
                     FloatingActionButton(onClick = { pickImage() }) {
@@ -72,30 +74,47 @@ class ColorFilterFragment : Fragment() {
                     }
                 },
                 topBar = {
-                    TopAppBar {
-                        Icon(imageVector = Icons.Default.Settings, contentDescription = null,
-                            modifier = Modifier.clickable {
-                                scope.launch {
-                                    scaffoldState.drawerState.apply {
-                                        if (isClosed) open() else close()
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = viewModel.filter?.name ?: ""
+                            )
+                        },
+                        navigationIcon = {
+                            Icon(imageVector = Icons.Default.Menu, contentDescription = null,
+                                modifier = Modifier.clickable {
+                                    scope.launch {
+                                        scaffoldState.drawerState.apply {
+                                            if (isClosed) open() else close()
+                                        }
                                     }
-                                }
-                            })
-                    }
+                                })
+                        }
+                    )
                 },
                 drawerContent = {
                     LazyColumn {
                         items(LocalFilters.size) { index ->
-                            Text(
-                                text = LocalFilters[index].name,
-                                fontSize = 14.sp,
-                                modifier = Modifier
-                                    .padding(4.dp, 6.dp)
-                                    .clickable {
-                                        viewModel.filter = LocalFilters[index]
-                                        doFilter()
+                            Column(modifier = Modifier
+                                .clickable {
+                                    scope.launch {
+                                        scaffoldState.drawerState.apply {
+                                            if (isOpen) close()
+                                        }
                                     }
-                            )
+                                    viewModel.filter = LocalFilters[index]
+                                    doFilter()
+                                }) {
+                                Text(
+                                    text = LocalFilters[index].name,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier
+                                        .padding(8.dp, 16.dp)
+                                        .fillParentMaxWidth(1.0F)
+                                )
+                                Divider(modifier = Modifier.padding(horizontal = 8.dp))
+                            }
                         }
                     }
                 }
@@ -229,7 +248,11 @@ class ColorFilterFragment : Fragment() {
                         // Obtain the bitmap from the image path.
                         val bitmap = ScanUtil.compressBitmap(requireActivity(), path)
                         viewModel.sourceBitmap = bitmap
-                        viewModel.sourceBitmap = bitmap
+                        if (viewModel.filter != null) {
+                            doFilter()
+                        } else {
+                            viewModel.showBitmap = bitmap
+                        }
                     }
                 }
 
